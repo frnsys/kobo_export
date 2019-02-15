@@ -1,3 +1,9 @@
+"""
+Usage:
+- plug in your Kobo
+- mount it: `sudo mount /dev/sda /media/usb/`
+"""
+
 import json
 import sqlite3
 
@@ -26,7 +32,10 @@ if __name__ == '__main__':
     cur = con.cursor()
     cur.execute(QUERY_ITEMS)
 
-    data = []
+    try:
+        data = json.load(open('kobo.json'))
+    except FileNotFoundError:
+        data = []
     for row in cur.fetchall():
         data.append({k: v for k, v in zip(KEYS, row)})
 
