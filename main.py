@@ -8,6 +8,7 @@ import json
 import sqlite3
 
 DB_PATH = 'KoboReader.sqlite'
+SAVE_PATH = 'kobo.json'
 QUERY_ITEMS = (
     "SELECT "
     "Bookmark.VolumeID, "
@@ -28,12 +29,18 @@ KEYS = ['path', 'text', 'anno', 'extra_anno',
 
 
 if __name__ == '__main__':
+    import sys
+    # Allow override for DB_PATH
+    args = sys.argv[1:]
+    if args: DB_PATH = args.pop(0)
+    if args: SAVE_PATH = args.pop(0)
+
     con = sqlite3.connect(DB_PATH)
     cur = con.cursor()
     cur.execute(QUERY_ITEMS)
 
     try:
-        data = json.load(open('kobo.json'))
+        data = json.load(open(SAVE_PATH))
     except FileNotFoundError:
         data = []
     for row in cur.fetchall():
@@ -42,5 +49,5 @@ if __name__ == '__main__':
     cur.close()
     con.close()
 
-    with open('kobo.json', 'w') as f:
+    with open(SAVE_PATH, 'w') as f:
         json.dump(data, f)
