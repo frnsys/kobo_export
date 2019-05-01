@@ -44,7 +44,9 @@ if __name__ == '__main__':
     except FileNotFoundError:
         data = []
     for row in cur.fetchall():
-        data.append({k: v for k, v in zip(KEYS, row)})
+        d = {k: v for k, v in zip(KEYS, row)}
+        if d not in data:
+            data.append(d)
 
     cur.close()
     con.close()
